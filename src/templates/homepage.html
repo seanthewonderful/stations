@@ -1,0 +1,11 @@
+{% extends "base.html" %} {% block title %}Gas Station{% endblock %} {% block
+content %}
+
+<h1>Gas Station</h1>
+
+<ul>
+  {% for i in variable %}
+  <li>{{ i }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}
