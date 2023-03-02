@@ -35,7 +35,7 @@ class Station(db.Model):
     coffee_quality = db.Column(db.Integer, nullable=True)
     showers = db.Column(db.Boolean)
     
-    fuels = db.relationship('Fuel', back_populates='stations')
+    fuel_options = db.relationship('Fuel', secondary='stations_fuels', back_populates='stations')
     
     def __repr__(self) -> str:
         return super().__repr__()
@@ -64,7 +64,7 @@ class Shower(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     size = db.Column(db.Integer) # Small, medium, large? -> 1,2,3
     cleanliness = db.Column(db.Integer) # 1-5 cleanliness rating? Or probably another rating table
-    price = db.Column(db.Decimal)
+    price = db.Column(db.Numeric, nullable=True)
     
     def __repr__(self) -> str:
         return super().__repr__()
@@ -79,8 +79,23 @@ class Fuel(db.Model):
     type = db.Column(db.String(25))
     octane = db.Column(db.Integer, nullable=True)
     
+    stations = db.relationship('Station', secondary='stations_fuels', back_populates='fuel_options')
+    
     def __repr__(self):
         return f"<Fuel type:{self.type}, octane:{self.octane}>"
+    
+    
+class StationFuel(db.Model):
+    """Junction table to create many-many relationship between stations and fuels"""
+    
+    __tablename__ = "stations_fuels"
+    
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    station_id = db.Column(db.Integer, db.ForeignKey('stations.id'))
+    fuel_id = db.Column(db.Integer, db.ForeignKey('fuels.id'))
+    
+    def __repr__(self) -> str:
+        return super().__repr__()
     
     
 class EVPlug(db.Model):
@@ -98,7 +113,7 @@ class EVPlug(db.Model):
         return super().__repr__()
     
     
-class ElectricVehicles(db.Model):
+class ElectricVehicle(db.Model):
     """Table for each EV to relate to 'ev_plugs' """
     
     __tablename__ = "electric_vehicles"
@@ -133,12 +148,13 @@ class VehiclePlugJunction(db.Model):
 def connect_to_db(app):
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['POSTGRES_URI']
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['FLASK_DEBUG'] = True
     db.app = app
     db.init_app(app)
     
 
 if __name__ == "__main__":
+    os.system('source config.sh')
     from app import app
     connect_to_db(app=app)
-    import os
-    os.system('source config.sh')
+    print("Connected to DB: stationation")
