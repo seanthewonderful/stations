@@ -155,6 +155,6 @@ def connect_to_db(app):
 
 if __name__ == "__main__":
     os.system('source config.sh')
-    from app import app
+    from flaskr import app
     connect_to_db(app=app)
     print("Connected to DB: stationation")

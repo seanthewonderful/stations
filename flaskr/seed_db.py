@@ -1,5 +1,5 @@
 from model import db, connect_to_db, User, Station, Bathroom, Shower, Fuel, EVPlug, ElectricVehicle, VehiclePlugJunction
-from app import app
+from flaskr import app
 from werkzeug.security import generate_password_hash
 import os
 
