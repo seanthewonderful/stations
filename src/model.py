@@ -121,11 +121,24 @@ class VehiclePlugJunction(db.Model):
     
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     
-    ev_id = db.Column(db.Integer, db.ForeignKey("electric_vehicles.id"))
-    plug_id = db.Column(db.Integer, db.ForeignKey("ev_plugs.id"))
+    ev_id = db.Column(db.Integer, db.ForeignKey('electric_vehicles.id'))
+    plug_id = db.Column(db.Integer, db.ForeignKey('ev_plugs.id'))
     notes = db.Column(db.String, nullable=True)
     
     def __repr__(self) -> str:
         return super().__repr__()
     
+
+"""DB Connection Function"""
+def connect_to_db(app):
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['POSTGRES_URI']
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    db.app = app
+    db.init_app(app)
     
+
+if __name__ == "__main__":
+    from app import app
+    connect_to_db(app=app)
+    import os
+    os.system('source config.sh')
