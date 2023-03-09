@@ -1,11 +1,15 @@
-{% extends "base.html" %} {% block title %}Gas Station{% endblock %} {% block
+{% extends "base.html" %} {% block title %}Station Nation{% endblock %} {% block
 content %}
+<div id="holder">
+  <iframe
+    id="mapframe"
+    src="{{ url_for('display_map') }}"
+    style="height: 100vh; width: 100vw"
+  >
+  </iframe>
+</div>
 
-<h1>Gas Station</h1>
-
-<ul>
-  {% for i in variable %}
-  <li>{{ i }}</li>
-  {% endfor %}
-</ul>
+<div id="bar">
+  <h1>Hello World</h1>
+</div>
 {% endblock %}
