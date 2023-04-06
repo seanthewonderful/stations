@@ -28,19 +28,57 @@ class Station(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     
     name = db.Column(db.String(50))
-    fuel_type = db.Column(db.String(75))
+    city = db.Column(db.String(50))
+    state = db.Column(db.String(2))
+    truck_parking = db.Column(db.Boolean)
     ev_charging = db.Column(db.Boolean)
-    ev_charge_type = db.Column(db.String(100))
-    cuisines = db.Column(db.String(200), nullable=True)
+    # cuisines = db.Column(db.String(200), nullable=True)
     coffee_quality = db.Column(db.Integer, nullable=True)
     showers = db.Column(db.Boolean)
+    lat = db.Column(db.Numeric)
+    lng = db.Column(db.Numeric)
     
     fuel_options = db.relationship('Fuel', secondary='stations_fuels', back_populates='stations')
     
     def __repr__(self) -> str:
         return super().__repr__()
+
+class StationCompany(db.Model):
+    """To connect stations to their parent company (Arco, Maverick, Sinclair...)"""
+    
+    __tablename__ = "station_companies"
+    
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    
+    name = db.Column(db.String(50), unique=True)
+    # states_of_operation = db.relationship('State')
+    
+    def __repr__(self) -> str:
+        return super().__repr__()
+    
+class Restaurant(db.Model):
+    """A table for restaurant chains available in station grounds"""
+    
+    __tablename__ = "restaurants"
+    
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     
     
+    def __repr__(self) -> str:
+        return super().__repr__()
+    
+class StationFood(db.Model):
+    """A table for traditional 'gas station food' produced by the station itself (Pizza slice, tornado, beef jerky...)"""
+    
+    __tablename__ = "station_foods"
+    
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    
+    generic_name = db.Column(db.String(50))
+    
+    def __repr__(self) -> str:
+        return super().__repr__()  
+
 class Bathroom(db.Model):
     """The table of bathrooms"""
     
@@ -145,16 +183,18 @@ class VehiclePlugJunction(db.Model):
     
 
 """DB Connection Function"""
-def connect_to_db(app):
+def connect_to_db(app, db=db):
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['POSTGRES_URI']
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['FLASK_DEBUG'] = True
     db.app = app
     db.init_app(app)
+    print("Connected to DB")
     
 
 if __name__ == "__main__":
-    os.system('source config.sh')
-    from flaskr import app
+    os.system("source config.sh")
+    # from flaskr import app
+    from __init__ import app
     connect_to_db(app=app)
     print("Connected to DB: stationation")

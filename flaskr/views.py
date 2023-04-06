@@ -13,15 +13,17 @@ def home():
     
     variable = ["Bucee's", "QuikTrip", "Maverik", "Pilot"]
     
-    return render_template("homepage.html", variable=variable)
+    return render_template("homepage.html", 
+                           variable=variable)
 
 @app.route('/map')
 def display_map():
     
     user_location = (40.41930265443319, -111.8746632089035)
-    all_stations = get_all_stations()
+    # all_stations = get_all_stations()
     
-    m = make_map(location=user_location, stations=all_stations)
+    m = make_map(location=user_location, 
+                 stations=[1,2])
 
     return m.get_root().render()
 
